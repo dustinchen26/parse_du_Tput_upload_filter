@@ -21,9 +21,19 @@
         #output {
             margin-top: 20px;
         }
+        /* Flexbox container for side-by-side tables */
+        .table-container {
+            display: flex;
+            justify-content: flex-start; /* Tables aligned to the left */
+            gap: 20px;
+            width: 100%;
+        }
         table {
-            width: 30%;
+            width: auto; /* Automatically adjust width */
             border-collapse: collapse;
+            margin-top: 20px;
+            min-width: 300px; /* Ensure a minimum width for readability */
+            table-layout: fixed; /* Prevent table cells from expanding unexpectedly */
         }
         table, th, td {
             border: 1px solid black;
@@ -31,10 +41,12 @@
         th, td {
             padding: 10px;
             text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis; /* If text overflows, show ellipsis */
+            white-space: nowrap; /* Prevent wrapping of content */
         }
-        th:nth-child(1), td:nth-child(1) { width: 20%; }
-        th:nth-child(2), td:nth-child(2) { width: 5%; }
-        th:nth-child(3), td:nth-child(3) { width: 5%; }
+        th:nth-child(1), td:nth-child(1) { width: 30%; } /* Time column width */
+        th:nth-child(2), td:nth-child(2) { width: 30%; } /* DL/UL Tpt column width */
         .charts {
             display: flex;
             justify-content: space-between;
@@ -120,12 +132,12 @@
         <div>
             <label for="dlFilter">DL Tpt Filter:</label>
             <input type="number" id="dlFilter" step="0.01">
-            <button onclick="updateFilters()">Update DL Filter</button>
+            <button onclick="updateFiltersAndDownloadExcel('dl')">Update DL Filter & Download Excel</button>
         </div>
         <div>
             <label for="ulFilter">UL Tpt Filter:</label>
             <input type="number" id="ulFilter" step="0.01">
-            <button onclick="updateFilters()">Update UL Filter</button>
+            <button onclick="updateFiltersAndDownloadExcel('ul')">Update UL Filter & Download Excel</button>
         </div>
     </div>
 
@@ -146,17 +158,33 @@
 
     <!-- Result table -->
     <div id="output">
-        <h2>提取結果</h2>
-        <table id="resultTable">
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>DL Tpt</th>
-                    <th>UL Tpt</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="table-container">
+            <div>
+                <h2>DL Tpt Results</h2>
+                <table id="dlResultTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>DL Tpt</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div>
+                <h2>UL Tpt Results</h2>
+                <table id="ulResultTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>UL Tpt</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -182,8 +210,10 @@
             ulTpts = [];
             offset = 0;
             fileName = "";
-            const tableBody = document.querySelector("#resultTable tbody");
-            tableBody.innerHTML = "";
+            const dlTableBody = document.querySelector("#dlResultTable tbody");
+            const ulTableBody = document.querySelector("#ulResultTable tbody");
+            dlTableBody.innerHTML = "";
+            ulTableBody.innerHTML = "";
             if (dlChart) dlChart.destroy();
             if (ulChart) ulChart.destroy();
             document.getElementById('dlChart').style.display = 'none';
@@ -212,7 +242,7 @@
                     if (chunkIndex < chunkCount) {
                         readNextChunk();
                     } else {
-                        updateTable();
+                        updateTables();
                         updateCharts();
                     }
                 };
@@ -245,13 +275,25 @@
             }
         }
 
-        function updateTable() {
-            const tableBody = document.querySelector("#resultTable tbody");
-            tableBody.innerHTML = "";
+        function updateTables() {
+            const dlTableBody = document.querySelector("#dlResultTable tbody");
+            const ulTableBody = document.querySelector("#ulResultTable tbody");
+
+            dlTableBody.innerHTML = "";
+            ulTableBody.innerHTML = "";
+
+            // Update DL Table
             for (let i = 0; i < times.length; i++) {
                 const row = document.createElement("tr");
-                row.innerHTML = `<td>${times[i]}</td><td>${dlTpts[i]}</td><td>${ulTpts[i]}</td>`;
-                tableBody.appendChild(row);
+                row.innerHTML = `<td>${times[i]}</td><td>${dlTpts[i]}</td>`;
+                dlTableBody.appendChild(row);
+            }
+
+            // Update UL Table
+            for (let i = 0; i < times.length; i++) {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${times[i]}</td><td>${ulTpts[i]}</td>`;
+                ulTableBody.appendChild(row);
             }
         }
 
@@ -259,7 +301,6 @@
             document.getElementById('dlChart').style.display = 'block';
             document.getElementById('ulChart').style.display = 'block';
 
-            // Apply DL filter and update DL chart
             const filteredDlData = applyFilter(dlTpts, dlFilter);
             const filteredTimesForDl = filteredDlData.times;
             const ctxDl = document.getElementById('dlChart').getContext('2d');
@@ -272,7 +313,6 @@
                 }
             });
 
-            // Apply UL filter and update UL chart
             const filteredUlData = applyFilter(ulTpts, ulFilter);
             const filteredTimesForUl = filteredUlData.times;
             const ctxUl = document.getElementById('ulChart').getContext('2d');
@@ -284,8 +324,6 @@
                     datasets: [{ label: 'UL Tpt', data: filteredUlData.values, borderColor: 'green', fill: false }]
                 }
             });
-
-            updateTableWithFilteredData(filteredDlData, filteredUlData);
         }
 
         function applyFilter(data, filter) {
@@ -300,37 +338,43 @@
             return { times: filteredTimes, values: filteredValues };
         }
 
-        function updateFilters() {
+        function updateFiltersAndDownloadExcel(type) {
             const dlInput = document.getElementById('dlFilter').value;
             const ulInput = document.getElementById('ulFilter').value;
             dlFilter = dlInput ? parseFloat(dlInput) : null;
             ulFilter = ulInput ? parseFloat(ulInput) : null;
-            updateCharts();
-        }
 
-        function updateTableWithFilteredData(dlData, ulData) {
-            const tableBody = document.querySelector("#resultTable tbody");
-            tableBody.innerHTML = "";
-            const maxLength = Math.max(dlData.times.length, ulData.times.length);
-            for (let i = 0; i < maxLength; i++) {
-                const row = document.createElement("tr");
-                row.innerHTML = `<td>${dlData.times[i] || ulData.times[i] || ''}</td>
-                                 <td>${dlData.values[i] || ''}</td>
-                                 <td>${ulData.values[i] || ''}</td>`;
-                tableBody.appendChild(row);
+            updateCharts();
+
+            if (type === 'dl') {
+                downloadExcel('dl');
+            } else {
+                downloadExcel('ul');
             }
         }
 
-        function downloadExcel() {
+        function downloadExcel(type) {
             const ws_data = [
                 ['Time', 'DL Tpt', 'UL Tpt'],
                 ...times.map((time, index) => [time, dlTpts[index], ulTpts[index]])
             ];
 
-            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            let filteredData = { times: [], values: [] };
+            if (type === 'dl') {
+                filteredData = applyFilter(dlTpts, dlFilter);
+            } else if (type === 'ul') {
+                filteredData = applyFilter(ulTpts, ulFilter);
+            }
+
+            const filteredExcelData = [
+                ['Time', type === 'dl' ? 'DL Tpt' : 'UL Tpt'],
+                ...filteredData.times.map((time, index) => [time, filteredData.values[index]])
+            ];
+
+            const ws = XLSX.utils.aoa_to_sheet(filteredExcelData);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'GNB DU Stats');
-            const outputFileName = `${fileName}_excel.xlsx`;
+            XLSX.utils.book_append_sheet(wb, ws, 'Filtered Stats');
+            const outputFileName = `${fileName}_${type}_filtered.xlsx`;
             XLSX.writeFile(wb, outputFileName);
         }
 
