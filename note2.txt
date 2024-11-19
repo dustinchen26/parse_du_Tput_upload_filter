@@ -1,0 +1,321 @@
+修改底下html，應加2個功能，分別是DL和UL圖表filter功能，
+當使用者輸入文件以後，先顯示原本數值，
+增加兩個輸入框，DL filter和UL filter，旁邊各自增加update按鈕button，按下以後根據超過這個filter數值才顯示，
+如果沒有輸入，就是沒有限制，
+舉例如下，
+Time=Sat Nov 16 20:16:43 2024,	DL Tpt=0.11, UL Tpt=3.78
+Time=Sat Nov 16 20:16:53 2024,	DL Tpt=0.25, UL Tpt=9.48
+Time=Sat Nov 16 20:17:03 2024,	DL Tpt=0.23, UL Tpt=8.9
+當輸入DL Tpt filter=0.2 就只要顯示兩個點的圖表
+Time=Sat Nov 16 20:16:53 2024, DL Tpt=0.25
+Time=Sat Nov 16 20:17:03 2024, DL Tpt=0.23
+當輸入UL Tpt=5, 就只要顯示兩個點的圖表
+Time=Sat Nov 16 20:16:53 2024,	UL Tpt=9.48
+Time=Sat Nov 16 20:17:03 2024,	UL Tpt=8.9
+注意DL和UL可以不同橫坐標點
+
+舉例如下，
+Time=Sat Nov 16 20:16:43 2024,	DL Tpt=0.11, UL Tpt=3.78
+Time=Sat Nov 16 20:16:53 2024,	DL Tpt=0.25, UL Tpt=9.48
+Time=Sat Nov 16 20:17:03 2024,	DL Tpt=0.23, UL Tpt=8.9
+當只輸入DL Tpt Filter:0.2,且UL Tpt Filter沒有輸入的時候，UL-Tput應該還是維持原本3個點
+不要更新UL-Tput的值和圖表，
+也就是說UL和DL是分別去控制，各自去過濾
+<!-- 
+  Copyright © [2023] [Dustin_Chen]. All rights reserved.
+  Author: Dustin_Chen 
+  Email:  Dustin_Chen@compal.com or chuhpsdustin@gmail.com
+-->
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>parse_du_Tput_upload</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #output {
+            margin-top: 20px;
+        }
+        table {
+            width: 30%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th:nth-child(1), td:nth-child(1) { width: 20%; }
+        th:nth-child(2), td:nth-child(2) { width: 5%; }
+        th:nth-child(3), td:nth-child(3) { width: 5%; }
+        .charts {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .chart-container {
+            flex: 1 1 50%;
+            padding: 0;
+            margin: 0;
+        }
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .chart-titles {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+        .chart-title {
+            flex: 1;
+            text-align: center;
+        }
+        #fileInput {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 10px;
+            padding: 5px;
+            font-size: 14px;
+        }
+        /* 新增進度條容器 */
+        #progressContainer {
+            width: 100%;
+            background: #f3f3f3;
+            border-radius: 10px;
+            height: 20px;
+            margin-top: 20px;
+        }
+        #progressBar {
+            width: 0;
+            height: 100%;
+            background-color: #4caf50;
+            border-radius: 10px;
+        }
+        #progressText {
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>parse_du_Tput_upload</h2>
+    <p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com">chuhpsdustin@gmail.com</a></p>
+
+	<p>● Please select the "du_stats_XXX.txt" file to upload and parse the UL and DL throughput.</p>
+
+    <input type="file" id="fileInput" accept=".txt" onchange="handleFileUpload()" />
+
+    <!-- 進度條容器 -->
+    <div id="progressContainer">
+        <div id="progressBar">
+            <div id="progressText">0%</div>
+        </div>
+    </div>
+
+    <div class="chart-titles">
+        <div class="chart-title" id="dlChartTitle">DL Tpt</div>
+        <div class="chart-title" id="ulChartTitle">UL Tpt</div>
+    </div>
+
+    <div class="charts">
+        <div class="chart-container">
+            <canvas id="dlChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="ulChart"></canvas>
+        </div>
+    </div>
+
+    <div id="output">
+        <h2>提取結果</h2>
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>DL Tpt</th>
+                    <th>UL Tpt</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        let times = [];
+        let dlTpts = [];
+        let ulTpts = [];
+        let dlChart = null;
+        let ulChart = null;
+        let currentFile = null;
+        let fileReader = new FileReader();
+        let offset = 0;
+        let fileName = "";  // To store the name of the uploaded file
+
+        window.onload = function() {
+            resetDisplay();
+        };
+
+        function resetDisplay() {
+            // Reset variables
+            times = [];
+            dlTpts = [];
+            ulTpts = [];
+            offset = 0;
+            fileName = "";
+
+            // Reset the table
+            const tableBody = document.querySelector("#resultTable tbody");
+            tableBody.innerHTML = "";
+
+            // Reset the charts
+            if (dlChart) dlChart.destroy();
+            if (ulChart) ulChart.destroy();
+
+            document.getElementById('dlChart').style.display = 'none';
+            document.getElementById('ulChart').style.display = 'none';
+            document.getElementById('dlChartTitle').style.display = 'block';
+            document.getElementById('ulChartTitle').style.display = 'block';
+
+            // Reset progress bar
+            updateProgress(0);
+        }
+
+        function handleFileUpload() {
+            resetDisplay();  // Reset the display and variables for the new file
+
+            const fileInput = document.getElementById('fileInput');
+            currentFile = fileInput.files[0];
+
+            if (currentFile) {
+                fileName = currentFile.name.split('.').slice(0, -1).join('.');  // Extract file name without extension
+                const fileSize = currentFile.size;
+                const chunkSize = 1024 * 1024 * 10; // 10MB per chunk
+                let chunkCount = Math.ceil(fileSize / chunkSize);
+                let chunkIndex = 0;
+
+                updateProgress(0); // Initialize progress bar
+
+                fileReader.onload = function(event) {
+                    parseInput(event.target.result);
+                    chunkIndex++;
+                    updateProgress((chunkIndex / chunkCount) * 100);
+
+                    if (chunkIndex < chunkCount) {
+                        readNextChunk();
+                    } else {
+                        updateTable();
+                        updateCharts();
+                        downloadExcel();
+                    }
+                };
+
+                readNextChunk();
+            }
+            }
+
+        function readNextChunk() {
+            const chunkSize = 1024 * 1024 * 10; // 10MB per chunk
+            const blob = currentFile.slice(offset, offset + chunkSize);
+            fileReader.readAsText(blob);
+            offset += chunkSize; // Update offset after reading the chunk
+        }
+
+        function parseInput(fileContent) {
+            const timeRegex = /GNB DU Statistics\s+(.*?\s\d{4})/g;
+            const statsRegex = /SCH\s+DL\s+Tpt\s+:\s+([\d\.]+)\s+UL\s+Tpt\s+([\d\.]+)/g;
+
+            let timeMatch;
+            while ((timeMatch = timeRegex.exec(fileContent)) !== null) {
+                const time = timeMatch[1].trim();
+                const statsMatch = statsRegex.exec(fileContent);
+                
+                if (statsMatch) {
+                    const dlTpt = parseFloat(statsMatch[1]);
+                    const ulTpt = parseFloat(statsMatch[2]);
+
+                    times.push(time);
+                    dlTpts.push(dlTpt);
+                    ulTpts.push(ulTpt);
+                }
+            }
+        }
+
+        function updateTable() {
+            const tableBody = document.querySelector("#resultTable tbody");
+            tableBody.innerHTML = "";
+
+            for (let i = 0; i < times.length; i++) {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${times[i]}</td><td>${dlTpts[i]}</td><td>${ulTpts[i]}</td>`;
+                tableBody.appendChild(row);
+            }
+        }
+
+        function updateCharts() {
+            document.getElementById('dlChart').style.display = 'block';
+            document.getElementById('ulChart').style.display = 'block';
+            document.getElementById('dlChartTitle').style.display = 'none';
+            document.getElementById('ulChartTitle').style.display = 'none';
+
+            const ctxDl = document.getElementById('dlChart').getContext('2d');
+            dlChart = new Chart(ctxDl, {
+                type: 'line',
+                data: {
+                    labels: times,
+                    datasets: [{ label: 'DL Tpt', data: dlTpts, borderColor: 'blue', fill: false }]
+                }
+            });
+
+            const ctxUl = document.getElementById('ulChart').getContext('2d');
+            ulChart = new Chart(ctxUl, {
+                type: 'line',
+                data: {
+                    labels: times,
+                    datasets: [{ label: 'UL Tpt', data: ulTpts, borderColor: 'green', fill: false }]
+                }
+            });
+        }
+
+        function updateProgress(percent) {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            progressBar.style.width = `${percent}%`;
+            progressText.innerText = `${Math.round(percent)}%`;
+        }
+
+        function downloadExcel() {
+            const ws_data = [
+                ['Time', 'DL Tpt', 'UL Tpt'],
+                ...times.map((time, index) => [time, dlTpts[index], ulTpts[index]])
+            ];
+
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'GNB DU Stats');
+
+            // Append '_excel' to the input file name for the output Excel file
+            const outputFileName = `${fileName}_excel.xlsx`;
+
+            XLSX.writeFile(wb, outputFileName);
+        }
+    </script>
+</body>
+</html>

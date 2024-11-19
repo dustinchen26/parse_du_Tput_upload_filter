@@ -1,0 +1,196 @@
+寫一個html，讓使用者輸入內容，
+輸入如下
+#############################################################################################
+                       Software RAD - DU ver 03.00.00
+#############################################################################################
+#############################################################################################
+                       GNB DU Statistics  Sat Nov 16 20:16:43 2024
+#############################################################################################
+
+---------------------------------------------------------------------------------------------
+                       DU Control Plane Cummulative Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID   HANDOUT-TRIG        HANDOUT-SUCC        HANDOUT-FAIL        RRC-RES-TRIG        HANDIN-TRIG         HANDIN-SUCC         HANDIN-FAIL         INTRA-HO-TRIG       INTRA-HO-SUCC       INTRA-HO-FAIL       
+1         0                   0                   0                   0                   0                   0                   0                   0                   0                   0                   
+
+---------------------------------------------------------------------------------------------
+                       Error Cummulative Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID   PDSCH_INFO_WO_TX_DATA
+1         0         
+
+---------------------------------------------------------------------------------------------
+                       RACH Cummulative Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID   Cfra-Cfgd Cbra-Cfgd Pmbl-Dctd Pmbl-Igrd Cfra-Pmbl-Dctd Cbra-Pmbl-Dctd Pmbl-Srvd Num-RAR   Msg3-Ded-Succ  Msg3-NonDed-Succ    Msg3-Ded-Fail  Msg3-NonDed-Fail    Msg3-Crnti-CE  Num-RAR-Backoff  Num-RAR-Grant-GroupA  Num-RAR-Grant-GroupB  
+1         0         0         41        8         0              33             33        24        0                   5              0                   28             0              0                11                    22                    
+
+---------------------------------------------------------------------------------------------
+                Cell Level UL Sync Loss and Recovery Statistics  
+---------------------------------------------------------------------------------------------
+CELL-ID   Ul-Out-of-SyncUl-In-Sync    Ul-UnRecov    PdcchOr-Schd   PdcchOr-CFRA-Pmbl PdcchOr-CBRA-Pmbl PdcchOr-Retry-1   PdcchOr-Retry-2   PdcchOr-Retry-3   PdcchOr-Retry-4   
+1         0             0             0             0              0                 0                 0                 0                 0                 0                 
+
+---------------------------------------------------------------------------------------------
+                       F1AP Message Statistics
+---------------------------------------------------------------------------------------------
+DU:CU      F1-SETUP-REQUEST                                           1
+CU:DU      F1-SETUP-RESPONSE                                          1
+CU:DU      F1-SETUP-FAILURE                                           0
+CU:DU      F1-RESET                                                   0
+DU:CU      F1-RESET-ACKNOWLEDGE                                       0
+DU:CU      GNB-DU-CONFIG-UPDATE                                       2
+CU:DU      GNB-DU-CONFIG-UPDATE-ACKNOWLEDGE                           2
+CU:DU      GNB-DU-CONFIG-UPDATE-FAILURE                               0
+CU:DU      GNB-CU-CONFIG-UPDATE                                       1
+DU:CU      GNB-CU-CONFIG-UPDATE-ACKNOWLEDGE                           1
+CU:DU      GNB-DU-RESOURCE-COORDINATION-REQUEST                       0
+DU:CU      GNB-DU-RESOURCE-COORDINATION-REQUEST-ACKNOWLEDGE           0
+CU:DU      UE-CONTEXT-SETUP-REQUEST                                   2
+DU:CU      UE-CONTEXT-SETUP-RESPONSE                                  2
+DU:CU      UE-CONTEXT-SETUP-FAILURE                                   0
+DU:CU      UE-CONTEXT-RELEASE-REQUEST                                 0
+CU:DU      UE-CONTEXT-RELEASE-COMMAND                                 1
+DU:CU      UE-CONTEXT-RELEASE-COMPLETE                                1
+CU:DU      UE-CONTEXT-MODIFICATION-REQUEST                            2
+DU:CU      UE-CONTEXT-MODIFICATION-RESPONSE                           2
+DU:CU      UE-CONTEXT-MODIFICATION-FAILURE                            0
+DU:CU      UE-CONTEXT-MODIFICATION-REQUIRED                           0
+CU:DU      UE-CONTEXT-MODIFICATION-CONFIRM                            0
+CU:DU      DL-RRC-MESSAGE-TRANSFER                                    30
+DU:CU      UL-RRC-MESSAGE-TRANSFER                                    33
+DU:CU      INITIAL-UL-RRC-MESSAGE-TRANSFER                            5
+CU:DU      WRITE-REPLACE-WARNING-REQUEST                              0
+DU:CU      WRITE-REPLACE-WARNING-RESPONSE                             0
+
+
+---------------------------------------------------------------------------------------------
+                       DU User Plane Cummulative Statistics
+---------------------------------------------------------------------------------------------
+   DROP-BUFFER-FULL                                                   0
+  DLSDAP-DEQ-FAILED                                                   0
+  ULSDAP-ENQ-FAILED                                                   0
+  ULSDAP-DEQ-FAILED                                                   0
+  DLPDCP-ENQ-FAILED                                                   0
+  DLPDCP-DEQ-FAILED                                                   0
+  DLPDCP-FWDQ-DEQ-FAILED                                              0
+  DLPDCP-CIPHQ-ENQ-FAILED                                             0
+  DLPDCP-CIPHQ-DEQ-FAILED                                             0
+  ULPDCP-CIPHQ-ENQ-FAILED                                             0
+  ULPDCP-CIPHQ-DEQ-FAILED                                             0
+  NRUP-DL-ENQUEUE-FAILED                                              0
+  NRUP-DL-DEQUEUE-FAILED                                              0
+  EGTP-UL-ENQUEUE-FAILED                                              0
+  EGTP-UL-DEQUEUE-FAILED                                              0
+   RLC-DATREQ-TRIG1                                                   0
+   RLC-DATREQ-TRIG2                                                   0
+   RLC-DATREQ-PROC1                                                   1266
+   RLC-DATREQ-PROC2                                                   1266
+   RLC-ENQ-FAILED                                                     0
+   RLC-SDU-DQ-FAILED                                                  0
+   DROP-SDU-QUEUE-FULL                                                0
+   DROP-MEM-ALLOC-FAILED                                              0
+   DROP-TUNNEL-NOT-FOUND                                              0
+   DROP-RAB-NOT-FOUND                                                 0
+   DROP-REEST-IN-PROGRESS                                             0
+   DROP-DECODE-FAIL                                                   0
+   MAC-DECODE-FAIL                                                    0
+   DROP-UDP-RX-MEM-ALLOC-FAIL                                         0
+
+
+UpTime : 30 sec
+#############################################################################################
+                       GNB DU Statistics  
+#############################################################################################
+---------------------------------------------------------------------------------------------
+                       DL Instantaneous Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID   CELL-DL-BANDWIDTH  CELL-UL-BANDWIDTH  AVG-DL-PRB  AVG-DL-PRB-BWP-0  AVG-DL-PRB-BWP-1  AVG-DL-PRB-BWP-2  AVG-DL-PRB-BWP-3  DL-OCC   DL-SUCC   DL-NEWTX    DL-RETX   DL-DTX   DL-NACK-RV[0]   DL-NACK-RV[1]   DL-NACK-RV[2]   DL-NACK-RV[3]   DL-DTX-RV[0]   DL-DTX-RV[1]   DL-DTX-RV[2]   DL-DTX-RV[3]   DL-BLER   
+1         0                  0                  1.20        1.20              0.00              0.00              0.00              12007    1026      1022        4         0        2               0               0               0               0              0              0              0              0         
+
+---------------------------------------------------------------------------------------------
+                       UL Instantaneous Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID   AVG-UL-PRB  AVG-UL-PRB-BWP-0  AVG-UL-PRB-BWP-1  AVG-UL-PRB-BWP-2  AVG-UL-PRB-BWP-3  UL-OCC   UL-SUCC   UL-NEWTX   UL-RETX   UL-DATIND   UL-BLER ERR-PUCCH-NODE ERR-PUCCH-MSGLEN 
+1         85          85                0                 0                 0                 0        3438      3432       6         1715        0       0              0                
+
+---------------------------------------------------------------------------------------------
+                       Failure Instantaneous Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID   DL-OCC   DL-SUCC   TTI-ERR-MAJOR TTI-ERR-MINOR  DL-FAIL_0    DL-FAIL_1    DL-FAIL_2    DL-FAIL_3    DL-FAIL_4    DL-FAIL_5    DL-FAIL_6    DL-FAIL_7    DL-FAIL_8    DL-FAIL_9    DL-FAIL_10   DL-FAIL_11   DL-FAIL_12   DL-FAIL_13   DL-FAIL_14   DL-FAIL_15   DL-FAIL_16   DL-FAIL_17   DL-FAIL_18   DL-FAIL_19   DL-FAIL_20   DL-FAIL_21   DL-FAIL_22   DL-FAIL_23   DL-FAIL_24   DL-FAIL_25   DL-FAIL_26   
+1         12007    1026      0              0             0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            0            
+
+---------------------------------------------------------------------------------------------
+                       Cell UE Per TTI(UE/TTI) Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID  DL-0    UL-0    DL-1    UL-1    DL-2    UL-2    DL-3    UL-3    DL-4    UL-4    DL-5    UL-5    DL-6    UL-6    DL-7    UL-7    DL-8    UL-8    
+1        0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       
+
+---------------------------------------------------------------------------------------------
+                      Cell UE Statistics for DL MU-MIMO
+---------------------------------------------------------------------------------------------
+CELL-ID  MU-MIMO-PAIR  MU-MIMO-PAIR-4LAYER MU-MIMO-PAIR-3LAYER MU-MIMO-PAIR-2LAYER 
+1        0             0                   0                   0                   
+
+---------------------------------------------------------------------------------------------
+      Cell Level SHORT TERM BLER Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID  DIR     BLER%    0.0%     <0.5%    <1.0%    <2.0%    <5.0%    <10.0%   <25.0%   <50.0%   <100.0%  
+1        DL      0.00     0        0        0        0        0        0        0        0        0        
+ 
+1        UL      0.00     0        0        0        0        0        0        0        0        0        
+
+---------------------------------------------------------------------------------------------
+      Cell Level LONG TERM BLER Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID  DIR     BLER%    0.0%     <0.5%    <1.0%    <2.0%    <5.0%    <10.0%   <25.0%   <50.0%   <100.0%  
+1        DL      0.00     0        0        0        0        0        0        0        0        0        
+ 
+1        UL      0.00     0        0        0        0        0        0        0        0        0        
+
+---------------------------------------------------------------------------------------------
+                       UE SCH:DRX Instantaneous Statistics
+---------------------------------------------------------------------------------------------
+UE-ID  CELL-ID  BEAM-ID  STRT-ON-DUR STRT-DL-INACTV STRT-UL-INACTV STRT-DL-RETX  STRT-UL-RETX  EXP-ON-DUR  EXP-INACTV  EXP-DL-RETX   EXP-UL-RETX   EXP-SHORT_CYCL  UE_INACT_TO_ACT   UE_ACT_TO_INACT   UE_DL_INACT_CNT   UE_UL_INACT_CNT   
+
+17046  1        0        0           0              0              0             0             0           0           0             0             0               0                 0                 0                 0                 
+17047  1        0        0           0              0              0             0             0           0           0             0             0               0                 0                 0                 0                 
+17048  1        0        0           0              0              0             0             0           0           0             0             0               0                 0                 0                 0                 
+17049  1        0        0           0              0              0             0             0           0           0             0             0               0                 0                 0                 0                 
+
+---------------------------------------------------------------------------------------------
+                       UE Instantaneous Statistics
+---------------------------------------------------------------------------------------------
+UE-ID     BEAM-ID   CSIRS-PORT   PCELL-ID  DL-PKT-RX   DL-TPT    UL-PKT-TX UL-TPT    DL-LC-1   DL-LC-2   DL-LC-3   DL-LC-4   UL-LC-1   UL-LC-2   UL-LC-3   UL-LC-4   DL-PADDING  UL-PADDING  DL-PRB    UL-PRB    NUM-SR    NUM-BSR-TMR    SCELL-ACT-CE   TA-CE     NUM-TA-TMR   TA        
+17046     0         0            1         0           0.0000    0         0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0002      0.0445      1         23        205       0              0              0         0            0         
+17047     0         0            1         1620        0.0642    3390      3.7659    0.1109    0.0000    0.0000    0.0000    3.7739    0.0000    0.0000    0.0000    0.0427      5.1825      1         89        100       0              0              0         0            0         
+17048     0         0            1         0           0.0000    0         0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0003      0.0038      2         30        16        0              0              0         0            0         
+17049     0         0            1         0           0.0000    0         0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0004      0.0038      1         30        16        0              0              3         0            32        
+
+---------------------------------------------------------------------------------------------
+                       Cell Tpt Statistics
+---------------------------------------------------------------------------------------------
+CELL-ID  NUM-UE   SCH-DL  SCH-UL    
+1        4        0.11    3.78      
+
+Total Number of UEs  : 4
+	 EGTP DL Tpt : 0.06  UL Tpt 3.77
+	 X2 EGTP DL Tpt : 0.00  UL Tpt 0.00
+	 SCH  DL Tpt : 0.11  UL Tpt 3.78
+
+
+讀到GNB DU Statistics 開頭的Time記錄下來，
+接著再讀到SCH  DL Tpt開頭DL Tpt, UL Tpt記錄下來，
+預期能讀到
+Time=Nov 16 20:16:43 2024, SCH  DL Tpt : 0.11,  UL Tpt= 3.78
+重複以上動作直到輸入內容結束
+
+可以記錄
+Time 1= Nov 16 20:16:43 2024，DL Tpt 1=0.11 ， UL Tpt 1=3.78
+
+輸出成三個column，
+column 1=Time，column 2= DL Tpt, column 3=UL Tpt
+
+請劃出兩張圖，
+一張是DL Tpt對Time的曲線圖，
+一張是UL Tpt對Time的曲線圖，
