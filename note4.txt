@@ -1,3 +1,8 @@
+修改底下html，DL Tpt Filter是正確的，按下"Update DL Filter & Download Excel"可以輸出大於某個數值的DL Tput，
+可是Update UL Filter & Download Excel是錯誤的，excel同時輸出UL和DL，而且時間軸不是只保留UL大於filter的數值，
+請比較DL和UL，修正UL的錯誤
+
+
 <!-- 
   Copyright © [2023] [Dustin_Chen]. All rights reserved.
   Author: Dustin_Chen 
@@ -344,10 +349,8 @@
             dlFilter = dlInput ? parseFloat(dlInput) : null;
             ulFilter = ulInput ? parseFloat(ulInput) : null;
 
-            // Update charts for both DL and UL
             updateCharts();
 
-            // Download Excel only for the selected type (either 'dl' or 'ul')
             if (type === 'dl') {
                 downloadExcel('dl');
             } else {
@@ -356,27 +359,26 @@
         }
 
         function downloadExcel(type) {
-            let filteredData = { times: [], values: [] };
+            const ws_data = [
+                ['Time', 'DL Tpt', 'UL Tpt'],
+                ...times.map((time, index) => [time, dlTpts[index], ulTpts[index]])
+            ];
 
-            // Apply the respective filter based on the type
+            let filteredData = { times: [], values: [] };
             if (type === 'dl') {
                 filteredData = applyFilter(dlTpts, dlFilter);
             } else if (type === 'ul') {
                 filteredData = applyFilter(ulTpts, ulFilter);
             }
 
-            // Create the Excel data based on filtered results
             const filteredExcelData = [
                 ['Time', type === 'dl' ? 'DL Tpt' : 'UL Tpt'],
                 ...filteredData.times.map((time, index) => [time, filteredData.values[index]])
             ];
 
-            // Create a worksheet from the filtered data
             const ws = XLSX.utils.aoa_to_sheet(filteredExcelData);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Filtered Stats');
-
-            // Generate the output file name
             const outputFileName = `${fileName}_${type}_filtered.xlsx`;
             XLSX.writeFile(wb, outputFileName);
         }
