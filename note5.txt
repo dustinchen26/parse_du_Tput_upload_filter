@@ -1,3 +1,5 @@
+修正底下html網頁中的表格，按照excel輸出的內容，在按下filter以後也同時更新網頁的表格如同excel
+
 <!-- 
   Copyright © [2023] [Dustin_Chen]. All rights reserved.
   Author: Dustin_Chen 
@@ -21,18 +23,19 @@
         #output {
             margin-top: 20px;
         }
+        /* Flexbox container for side-by-side tables */
         .table-container {
             display: flex;
-            justify-content: flex-start;
+            justify-content: flex-start; /* Tables aligned to the left */
             gap: 20px;
             width: 100%;
         }
         table {
-            width: auto;
+            width: auto; /* Automatically adjust width */
             border-collapse: collapse;
             margin-top: 20px;
-            min-width: 300px;
-            table-layout: fixed;
+            min-width: 300px; /* Ensure a minimum width for readability */
+            table-layout: fixed; /* Prevent table cells from expanding unexpectedly */
         }
         table, th, td {
             border: 1px solid black;
@@ -41,11 +44,11 @@
             padding: 10px;
             text-align: center;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            text-overflow: ellipsis; /* If text overflows, show ellipsis */
+            white-space: nowrap; /* Prevent wrapping of content */
         }
-        th:nth-child(1), td:nth-child(1) { width: 30%; }
-        th:nth-child(2), td:nth-child(2) { width: 30%; }
+        th:nth-child(1), td:nth-child(1) { width: 30%; } /* Time column width */
+        th:nth-child(2), td:nth-child(2) { width: 30%; } /* DL/UL Tpt column width */
         .charts {
             display: flex;
             justify-content: space-between;
@@ -195,7 +198,7 @@
         let currentFile = null;
         let fileReader = new FileReader();
         let offset = 0;
-        let fileName = "";
+        let fileName = "";  // To store the name of the uploaded file
         let dlFilter = null;
         let ulFilter = null;
 
@@ -346,9 +349,6 @@
             // Update charts for both DL and UL
             updateCharts();
 
-            // Update tables for both DL and UL
-            updateFilteredTables();
-
             // Download Excel only for the selected type (either 'dl' or 'ul')
             if (type === 'dl') {
                 downloadExcel('dl');
@@ -357,34 +357,10 @@
             }
         }
 
-        function updateFilteredTables() {
-            const filteredDlData = applyFilter(dlTpts, dlFilter);
-            const filteredUlData = applyFilter(ulTpts, ulFilter);
-
-            const dlTableBody = document.querySelector("#dlResultTable tbody");
-            const ulTableBody = document.querySelector("#ulResultTable tbody");
-
-            dlTableBody.innerHTML = "";
-            ulTableBody.innerHTML = "";
-
-            // Update DL Table
-            filteredDlData.times.forEach((time, index) => {
-                const row = document.createElement("tr");
-                row.innerHTML = `<td>${time}</td><td>${filteredDlData.values[index]}</td>`;
-                dlTableBody.appendChild(row);
-            });
-
-            // Update UL Table
-            filteredUlData.times.forEach((time, index) => {
-                const row = document.createElement("tr");
-                row.innerHTML = `<td>${time}</td><td>${filteredUlData.values[index]}</td>`;
-                ulTableBody.appendChild(row);
-            });
-        }
-
         function downloadExcel(type) {
             let filteredData = { times: [], values: [] };
 
+            // Apply the respective filter based on the type
             if (type === 'dl') {
                 filteredData = applyFilter(dlTpts, dlFilter);
             } else if (type === 'ul') {
